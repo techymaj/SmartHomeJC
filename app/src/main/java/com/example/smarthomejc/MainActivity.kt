@@ -168,9 +168,11 @@ fun HomeScreen() {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Icon(
-                    imageVector = Icons.Default.Star,
+                    imageVector = Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
                     modifier = Modifier.size(100.dp),
                     tint = Color.Gray
@@ -194,10 +196,150 @@ fun HomeScreen() {
 @Composable
 fun ThingsScreen() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.CenterStart
     ) {
-        Text(text = "Things")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = "Things",
+                modifier = Modifier.size(100.dp),
+                tint = Color.Gray
+            )
+            Text(
+                text = "No Things!",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray
+            )
+            Text(text = "It looks like we didn't discover any devices.")
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "Try an option below")
+            Spacer(modifier = Modifier.height(10.dp))
+            Divider(
+                color = Color.LightGray,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    FloatingActionButton(
+                        onClick = { /*TODO*/ },
+                        backgroundColor = Color.Blue,
+                        contentColor = Color.White,
+                        modifier = Modifier.size(40.dp),
+                        content = {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "Run discovery"
+                            )
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Run discovery",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Blue,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    FloatingActionButton(
+                        onClick = { /*TODO*/ },
+                        backgroundColor = Color.Blue,
+                        contentColor = Color.White,
+                        modifier = Modifier.size(40.dp),
+                        content = {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Add a cloud account"
+                            )
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Add a cloud account",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Blue,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    FloatingActionButton(
+                        onClick = { /*TODO*/ },
+                        backgroundColor = Color.Blue,
+                        contentColor = Color.White,
+                        modifier = Modifier.size(40.dp),
+                        content = {
+                            Icon(
+                                imageVector = Icons.Filled.List,
+                                contentDescription = "View our supported devices"
+                            )
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "View our supported devices",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Blue,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    FloatingActionButton(
+                        onClick = { /*TODO*/ },
+                        backgroundColor = Color.Blue,
+                        contentColor = Color.White,
+                        modifier = Modifier.size(40.dp),
+                        content = {
+                            Icon(
+                                imageVector = Icons.Filled.Email,
+                                contentDescription = "Contact support"
+                            )
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Contact support",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Blue,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+            }
+        }
     }
 }
 
