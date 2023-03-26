@@ -5,10 +5,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -76,7 +73,20 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         )
-                    }
+                    },
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = { /*TODO*/ },
+                            backgroundColor = Color.Blue,
+                            contentColor = Color.White,
+                            content = {
+                                Icon(
+                                    imageVector = Icons.Filled.Add,
+                                    contentDescription = "Add"
+                                )
+                            }
+                        )
+                    },
 
                 ) {
                     Navigation(navController = navController)
@@ -158,19 +168,23 @@ fun HomeScreen() {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Column {
-                Text(text = "Favorites")
-                FloatingActionButton(
-                    onClick = { /*TODO*/ },
-                    backgroundColor = Color.Blue,
-                    contentColor = Color.White,
-                    content = {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add"
-                        )
-                    }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(100.dp),
+                    tint = Color.Gray
                 )
+                Text(
+                    text = "No Favorites!",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
+                Text(text = "Add your favorite routines for easy access here.")
+                Text(text = "Tap the '+' button below to add your favorite routines.")
             }
         }
 
