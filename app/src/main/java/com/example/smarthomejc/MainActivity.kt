@@ -14,6 +14,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -56,7 +58,7 @@ class MainActivity : ComponentActivity() {
                                 BottomNavItem("Things", "things", Icons.Filled.Search),
                                 BottomNavItem("Routines", "routines", painter = painterResource(id = R.drawable.ic_update)),
                                 BottomNavItem("Ideas", "ideas", painter = if (navController.currentBackStackEntryAsState().value?.destination?.id == 4) painterResource(id = R.drawable.ic_bulb_filled) else painterResource(id = R.drawable.ic_bulb)),
-                                BottomNavItem("Settings", "settings", painter = painterResource(id = R.drawable.ic_poly)),
+                                BottomNavItem("Settings", "settings", Icons.Filled.Settings),
                             ),
                             navController = navController,
                             onItemClick = {
@@ -455,10 +457,10 @@ fun IdeasScreen() {
                         .height(200.dp)
                         .rotate(180F)
                         .blur(
-                        radiusX = 10.dp,
-                        radiusY = 10.dp,
-                        edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(8.dp))
-                    ),
+                            radiusX = 10.dp,
+                            radiusY = 10.dp,
+                            edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(8.dp))
+                        ),
 //                    colorFilter = ColorFilter.lighting(Color.Yellow, Color.Magenta),
                 alpha = 0.85f
                 )
@@ -488,9 +490,84 @@ fun IdeasScreen() {
 @Composable
 fun SettingsScreen() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Settings")
+        Column {
+            CustomListTitle(title = "User Settings")
+            CustomListItem(
+                title = "Majaliwa" ,
+                subtitle = "wilfriedmajaliwa@gmail.com",
+                itemIcon = Icons.Filled.AccountCircle
+            )
+            CustomListTitle(title = "Home Settings")
+            CustomListItem(
+                title = "Accounts & Hubs" ,
+                itemIcon = Icons.Filled.Person
+            )
+            Divider()
+            CustomListItem(
+                title = "Clients" ,
+                itemIcon = Icons.Rounded.Phone
+            )
+            Divider()
+            CustomListItem(
+                title = "Locations" ,
+                itemIcon = Icons.Filled.LocationOn
+            )
+            CustomListTitle(title = "Voice")
+            CustomListItem(
+                title = "Voice Assistant" ,
+                itemIcon = Icons.Filled.Phone
+            )
+            CustomListTitle(title = "App Permissions")
+            CustomListItem(
+                title = "Notifications & Permissions" ,
+                itemIcon = Icons.Filled.Settings,
+                color = Color.Black
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomListTitle(title: String) {
+    Text(
+        text = title,
+        color = Color.DarkGray,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .padding(all = 12.dp),
+    )
+}
+
+@Composable
+fun CustomListItem(title: String, subtitle: String? = null, itemIcon: ImageVector, color: Color = Color.Yellow) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 16.dp)
+    ) {
+        Icon(
+            modifier = Modifier.align(Alignment.CenterVertically),
+            imageVector = itemIcon,
+            contentDescription = "Icon",
+            tint = color
+        )
+        Column(modifier = Modifier.padding(start = 25.dp)) {
+            Text(
+                text = title,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Light,
+                    color = Color.Gray
+                )
+            }
+        }
     }
 }
