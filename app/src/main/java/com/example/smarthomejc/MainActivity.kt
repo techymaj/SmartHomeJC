@@ -5,15 +5,30 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,11 +52,11 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         BottomNavigationBar(
                             items = listOf(
-                                BottomNavItem("Favorites", "favorites", Icons.Filled.Favorite),
+                                BottomNavItem("Favorites", "favorites", Icons.Rounded.Star),
                                 BottomNavItem("Things", "things", Icons.Filled.Search),
-                                BottomNavItem("Routines", "routines", Icons.Filled.Close),
-                                BottomNavItem("Ideas", "ideas", Icons.Filled.Info),
-                                BottomNavItem("Settings", "settings", Icons.Filled.Settings)
+                                BottomNavItem("Routines", "routines", painter = painterResource(id = R.drawable.ic_update)),
+                                BottomNavItem("Ideas", "ideas", painter = if (navController.currentBackStackEntryAsState().value?.destination?.id == 4) painterResource(id = R.drawable.ic_bulb_filled) else painterResource(id = R.drawable.ic_bulb)),
+                                BottomNavItem("Settings", "settings", painter = painterResource(id = R.drawable.ic_poly)),
                             ),
                             navController = navController,
                             onItemClick = {
@@ -61,16 +76,38 @@ class MainActivity : ComponentActivity() {
                                     fontWeight = FontWeight.Bold
                                 )
                             },
-                            backgroundColor = Color.Blue,
+                            backgroundColor = Color.Yellow,
                             elevation = 5.dp,
                             contentColor = Color.White,
                             actions = {
                                 IconButton(onClick = { /*TODO*/ }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Edit,
-                                        contentDescription = "Edit"
-                                    )
-                                }
+                                        Icon(
+                                            imageVector = Icons.Filled.Edit,
+                                            contentDescription = "Edit"
+                                        )
+                                    }
+//                                if (navController.currentBackStackEntry?.destination?.route == "favorites") {
+//                                    IconButton(onClick = { /*TODO*/ }) {
+//                                        Icon(
+//                                            imageVector = Icons.Filled.Edit,
+//                                            contentDescription = "Edit"
+//                                        )
+//                                    }
+//                                } else if (navController.currentBackStackEntry?.destination?.route == "things") {
+//                                    IconButton(onClick = { /*TODO*/ }) {
+//                                        Icon(
+//                                            imageVector = Icons.Filled.Search,
+//                                            contentDescription = "Search"
+//                                        )
+//                                    }
+//                                    Spacer(modifier = Modifier.width(10.dp))
+//                                    IconButton(onClick = { /*TODO*/ }) {
+//                                        Icon(
+//                                            imageVector = Icons.Filled.Menu,
+//                                            contentDescription = "Menu"
+//                                        )
+//                                    }
+//                                }
                             }
                         )
                     },
@@ -88,7 +125,7 @@ class MainActivity : ComponentActivity() {
                         )
                     },
 
-                ) {
+                    ) {
                     Navigation(navController = navController)
                 }
 
@@ -115,16 +152,21 @@ fun BottomNavigationBar(
             val selected = backStackEntry.value?.destination?.route == item.route
             BottomNavigationItem(
                 icon = {
-                    Column(horizontalAlignment = CenterHorizontally) {
+                    if (item.icon != null) {
                         Icon(
-                            imageVector = item.icon,
+                            imageVector = item.icon!!,
+                            contentDescription = item.name
+                        )
+                    } else {
+                        Icon(
+                            painter = item.painter!!,
                             contentDescription = item.name
                         )
                     }
                 },
                 label = { Text(item.name) },
                 selected = selected,
-                selectedContentColor = Color.Blue,
+                selectedContentColor = Color.Yellow,
                 unselectedContentColor = Color.Black,
                 onClick = {
                     onItemClick(item)
@@ -145,6 +187,7 @@ fun Navigation(navController: NavHostController) {
         composable("things") {
             // Things screen
             ThingsScreen()
+
         }
         composable("routines") {
             // Routines screen
@@ -172,7 +215,7 @@ fun HomeScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
+                    painter = painterResource(id = R.drawable.round_star_border),
                     contentDescription = "Favorite",
                     modifier = Modifier.size(100.dp),
                     tint = Color.Gray
@@ -349,17 +392,96 @@ fun RoutinesScreen() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "Routines")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_update),
+                contentDescription = "Routines",
+                modifier = Modifier.size(100.dp),
+                tint = Color.Gray
+            )
+            Text(
+                text = "No Routines!",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray
+            )
+            Text("Click the '+' button below to get started")
+        }
     }
 }
 
 @Composable
 fun IdeasScreen() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 10.dp),
     ) {
-        Text(text = "Ideas")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "More Recommendations",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray
+            )
+            Text(
+                "Even more recommendations!",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp),
+                textAlign = TextAlign.Start,
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Start),
+            ) {
+                Image(
+                    painterResource(id = R.drawable.hallelujah),
+                    contentDescription = "Image",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .rotate(180F)
+                        .blur(
+                        radiusX = 10.dp,
+                        radiusY = 10.dp,
+                        edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(8.dp))
+                    ),
+//                    colorFilter = ColorFilter.lighting(Color.Yellow, Color.Magenta),
+                alpha = 0.85f
+                )
+                Column(
+                    modifier = Modifier.padding(all = 10.dp)
+                ) {
+                    Text(
+                        text = "Thanksgiving Dinner Ready",
+                        color = Color.White,
+                        fontSize = 30.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Normal,
+                    )
+                    Text(
+                        text = "Send me a notification",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Light,
+                    )
+                }
+            }
+        }
     }
 }
 
