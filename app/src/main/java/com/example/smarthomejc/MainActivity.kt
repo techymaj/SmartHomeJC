@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -36,14 +38,31 @@ class MainActivity : ComponentActivity() {
         setContent {
             SmartHomeJCTheme {
                 val navController = rememberNavController()
+                val systemUiController = rememberSystemUiController()
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = Color.Red,
+                        darkIcons = false
+                    )
+                }
                 Scaffold(
                     bottomBar = {
                         BottomNavigationBar(
                             items = listOf(
                                 BottomNavItem("Favorites", "favorites", Icons.Rounded.Star),
                                 BottomNavItem("Things", "things", Icons.Filled.Search),
-                                BottomNavItem("Routines", "routines", painter = painterResource(id = R.drawable.ic_update)),
-                                BottomNavItem("Ideas", "ideas", painter = if (navController.currentBackStackEntryAsState().value?.destination?.id == 4) painterResource(id = R.drawable.ic_bulb_filled) else painterResource(id = R.drawable.ic_bulb)),
+                                BottomNavItem(
+                                    "Routines",
+                                    "routines",
+                                    painter = painterResource(id = R.drawable.ic_update)
+                                ),
+                                BottomNavItem(
+                                    "Ideas",
+                                    "ideas",
+                                    painter = if (navController.currentBackStackEntryAsState().value?.destination?.id == 4) painterResource(
+                                        id = R.drawable.ic_bulb_filled
+                                    ) else painterResource(id = R.drawable.ic_bulb)
+                                ),
                                 BottomNavItem("Settings", "settings", Icons.Filled.Settings),
                             ),
                             navController = navController,
@@ -64,16 +83,16 @@ class MainActivity : ComponentActivity() {
                                     fontWeight = FontWeight.Bold
                                 )
                             },
-                            backgroundColor = Color.Yellow,
+                            backgroundColor = Color.Red,
                             elevation = 5.dp,
                             contentColor = Color.White,
                             actions = {
                                 IconButton(onClick = { /*TODO*/ }) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Edit,
-                                            contentDescription = "Edit"
-                                        )
-                                    }
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        contentDescription = "Edit"
+                                    )
+                                }
 //                                if (navController.currentBackStackEntry?.destination?.route == "favorites") {
 //                                    IconButton(onClick = { /*TODO*/ }) {
 //                                        Icon(
@@ -101,7 +120,10 @@ class MainActivity : ComponentActivity() {
                     },
                     floatingActionButton = {
                         FloatingActionButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                // Navigate to new screen
+                                navController.navigate("createRoutine")
+                            },
                             backgroundColor = Color.Blue,
                             contentColor = Color.White,
                             content = {
@@ -116,7 +138,6 @@ class MainActivity : ComponentActivity() {
                     ) {
                     Navigation(navController = navController)
                 }
-
             }
         }
     }
@@ -154,7 +175,7 @@ fun BottomNavigationBar(
                 },
                 label = { Text(item.name) },
                 selected = selected,
-                selectedContentColor = Color.Yellow,
+                selectedContentColor = Color.Red,
                 unselectedContentColor = Color.Black,
                 onClick = {
                     onItemClick(item)
@@ -167,7 +188,11 @@ fun BottomNavigationBar(
 
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "favorites") {
+    NavHost(
+        navController = navController,
+        startDestination = "favorites"
+    ) {
+
         composable("favorites") {
             // Home screen
             HomeScreen()
@@ -189,9 +214,18 @@ fun Navigation(navController: NavHostController) {
             // Settings screen
             SettingsScreen()
         }
+        composable("createRoutine") {
+            // Create Routine screen
+            CreateRoutineScreen(
+                navController = navController
+            )
+        }
+        composable("routine") {
+            // Create Routine screen
+            CreatingRoutineScreen()
+        }
     }
 }
-
 
 @Composable
 fun CustomListTitle(title: String) {
@@ -206,7 +240,12 @@ fun CustomListTitle(title: String) {
 }
 
 @Composable
-fun CustomListItem(title: String, subtitle: String? = null, itemIcon: ImageVector, color: Color = Color.Yellow) {
+fun CustomListItem(
+    title: String,
+    subtitle: String? = null,
+    itemIcon: ImageVector,
+    color: Color = Color.Red
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
