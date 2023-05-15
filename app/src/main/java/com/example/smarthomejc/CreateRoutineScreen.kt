@@ -22,40 +22,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun CreateRoutineScreened() {
-    val navController = rememberNavController()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 16.dp)
-        ) {
-            IconButton(onClick = {
-                // Navigate to a new screen
-                navController.navigate("routine")
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Back"
-                )
-            }
-            Text(
-                text = "Create a new Routine",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
-            )
-        }
-    }
-}
-
-@Composable
 fun CreateRoutineScreen(
     navController: NavController
 ) {

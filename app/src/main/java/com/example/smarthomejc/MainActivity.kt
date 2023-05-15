@@ -222,7 +222,15 @@ fun Navigation(navController: NavHostController) {
         }
         composable("routine") {
             // Create Routine screen
-            CreatingRoutineScreen()
+            CreatingRoutineScreen(
+                navController = navController
+            )
+        }
+        composable("eventsScreen") {
+            // Create Routine screen
+            AddingEventScreen(
+                navController = navController
+            )
         }
     }
 }
