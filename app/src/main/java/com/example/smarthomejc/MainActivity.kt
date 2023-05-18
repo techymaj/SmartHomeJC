@@ -13,6 +13,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -30,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -45,6 +49,7 @@ class MainActivity : ComponentActivity() {
                         darkIcons = false
                     )
                 }
+                var routeHere = remember{ mutableStateOf("favorites")}
                 Scaffold(
                     bottomBar = {
                         BottomNavigationBar(
@@ -69,6 +74,7 @@ class MainActivity : ComponentActivity() {
                             onItemClick = {
                                 // Handle item click
                                 navController.navigate(it.route)
+                                routeHere.value = navController.currentBackStackEntry?.destination?.route!!
                             }
                         )
                     },
@@ -93,7 +99,7 @@ class MainActivity : ComponentActivity() {
                                         contentDescription = "Edit"
                                     )
                                 }
-//                                if (navController.currentBackStackEntry?.destination?.route == "favorites") {
+/*                                if (navController.currentBackStackEntry?.destination?.route == "favorites") {
 //                                    IconButton(onClick = { /*TODO*/ }) {
 //                                        Icon(
 //                                            imageVector = Icons.Filled.Edit,
@@ -114,25 +120,35 @@ class MainActivity : ComponentActivity() {
 //                                            contentDescription = "Menu"
 //                                        )
 //                                    }
-//                                }
+//                                }*/
                             }
                         )
                     },
                     floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = {
-                                // Navigate to new screen
-                                navController.navigate("createRoutine")
-                            },
-                            backgroundColor = Color.Blue,
-                            contentColor = Color.White,
-                            content = {
-                                Icon(
-                                    imageVector = Icons.Filled.Add,
-                                    contentDescription = "Add"
-                                )
-                            }
-                        )
+                        if(routeHere.value != "things" && routeHere.value != "settings"){
+                            FloatingActionButton(
+                                onClick = {
+                                    // Navigate to new screen
+                                    if (routeHere.value == "favorites"){
+                                        navController.navigate("routines")
+                                    }
+                                    if (routeHere.value == "routines"){
+                                        navController.navigate("createRoutine")
+                                    }
+                                    if (routeHere.value == "ideas"){
+                                        //implement
+                                    }
+                                },
+                                backgroundColor = Color.Blue,
+                                contentColor = Color.White,
+                                content = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Add,
+                                        contentDescription = "Add"
+                                    )
+                                }
+                            )
+                        }
                     },
 
                     ) {
@@ -173,7 +189,7 @@ fun BottomNavigationBar(
                         )
                     }
                 },
-                label = { Text(item.name) },
+                label = { Text(item.name, maxLines = 1, style = androidx.compose.ui.text.TextStyle(fontSize = 10.sp)) },
                 selected = selected,
                 selectedContentColor = Color.Red,
                 unselectedContentColor = Color.Black,
