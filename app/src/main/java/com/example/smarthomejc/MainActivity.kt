@@ -31,15 +31,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.smarthomejc.ui.pieces.RoutineClass
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.File
+import java.io.FileOutputStream
 import java.time.format.TextStyle
 
+var file = File("data/routines.json")
+val gson = Gson()
+
 class MainActivity : ComponentActivity() {
+
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            try{
+                var json = file.readText()
+                val listType = object : TypeToken<List<RoutineClass>>() {}.type
+                lazyRoutines = gson.fromJson(json, listType)
+           }catch (_: Throwable){}
             SmartHomeJCTheme {
                 val navController = rememberNavController()
                 val systemUiController = rememberSystemUiController()
@@ -129,14 +143,21 @@ class MainActivity : ComponentActivity() {
                             FloatingActionButton(
                                 onClick = {
                                     // Navigate to new screen
-                                    if (routeHere.value == "favorites"){
+                                    if (routeHere.value == "createRoutine"){
+                                        lazyRoutines.add(RoutineClass(currName, currTime,false))
+                                        val json2 = gson.toJson(lazyRoutines)
+                                        val outputStream = FileOutputStream(file)
+                                        outputStream.write(json2.toByteArray())
+                                        outputStream.close()
                                         navController.navigate("routines")
                                     }
                                     if (routeHere.value == "routines"){
                                         navController.navigate("createRoutine")
+                                        routeHere.value = "createRoutine"
                                     }
-                                    if (routeHere.value == "ideas"){
-                                        //implement
+                                    if (routeHere.value == "favorites"){
+                                        navController.navigate("routines")
+                                        routeHere.value = "routines"
                                     }
                                 },
                                 backgroundColor = Color.Blue,
@@ -239,7 +260,8 @@ fun Navigation(navController: NavHostController) {
         composable("routine") {
             // Create Routine screen
             CreatingRoutineScreen(
-                navController = navController
+                //navController = navController,
+                onTimeSelected = {}
             )
         }
         composable("eventsScreen") {

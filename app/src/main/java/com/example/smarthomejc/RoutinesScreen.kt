@@ -1,20 +1,12 @@
 package com.example.smarthomejc
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.example.smarthomejc.ui.pieces.RoutineClass
 
+var lazyRoutines = mutableListOf<RoutineClass>()
 // committed
 @Composable
 fun RoutinesScreen() {
-//    Box(
-//        modifier = Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center
-//    )
-//    fun MyScreen() {
-        val routines = listOf(
-            "many" ,
-            "men" ,
-            "wish"
-        )
-
-        DynamicSvgContainer(routines = routines)
+        DynamicSvgContainer(routines = lazyRoutines)
     }
