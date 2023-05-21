@@ -13,6 +13,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -28,14 +31,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.smarthomejc.ui.pieces.RoutineClass
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.File
+import java.io.FileOutputStream
+import java.time.format.TextStyle
+
+var file = File("data/routines.json")
+val gson = Gson()
 
 class MainActivity : ComponentActivity() {
+
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            try{
+                var json = file.readText()
+                val listType = object : TypeToken<List<RoutineClass>>() {}.type
+                lazyRoutines = gson.fromJson(json, listType)
+           }catch (_: Throwable){}
             SmartHomeJCTheme {
                 val navController = rememberNavController()
                 val systemUiController = rememberSystemUiController()
@@ -45,6 +63,7 @@ class MainActivity : ComponentActivity() {
                         darkIcons = false
                     )
                 }
+                var routeHere = remember{ mutableStateOf("favorites")}
                 Scaffold(
                     bottomBar = {
                         BottomNavigationBar(
@@ -69,6 +88,7 @@ class MainActivity : ComponentActivity() {
                             onItemClick = {
                                 // Handle item click
                                 navController.navigate(it.route)
+                                routeHere.value = navController.currentBackStackEntry?.destination?.route!!
                             }
                         )
                     },
@@ -93,7 +113,7 @@ class MainActivity : ComponentActivity() {
                                         contentDescription = "Edit"
                                     )
                                 }
-//                                if (navController.currentBackStackEntry?.destination?.route == "favorites") {
+/*                                if (navController.currentBackStackEntry?.destination?.route == "favorites") {
 //                                    IconButton(onClick = { /*TODO*/ }) {
 //                                        Icon(
 //                                            imageVector = Icons.Filled.Edit,
@@ -114,25 +134,42 @@ class MainActivity : ComponentActivity() {
 //                                            contentDescription = "Menu"
 //                                        )
 //                                    }
-//                                }
+//                                }*/
                             }
                         )
                     },
                     floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = {
-                                // Navigate to new screen
-                                navController.navigate("createRoutine")
-                            },
-                            backgroundColor = Color.Blue,
-                            contentColor = Color.White,
-                            content = {
-                                Icon(
-                                    imageVector = Icons.Filled.Add,
-                                    contentDescription = "Add"
-                                )
-                            }
-                        )
+                        if(routeHere.value != "things" && routeHere.value != "settings"){
+                            FloatingActionButton(
+                                onClick = {
+                                    // Navigate to new screen
+                                    if (routeHere.value == "createRoutine"){
+                                        lazyRoutines.add(RoutineClass(currName, currTime,false))
+                                        val json2 = gson.toJson(lazyRoutines)
+                                        val outputStream = FileOutputStream(file)
+                                        outputStream.write(json2.toByteArray())
+                                        outputStream.close()
+                                        navController.navigate("routines")
+                                    }
+                                    if (routeHere.value == "routines"){
+                                        navController.navigate("createRoutine")
+                                        routeHere.value = "createRoutine"
+                                    }
+                                    if (routeHere.value == "favorites"){
+                                        navController.navigate("routines")
+                                        routeHere.value = "routines"
+                                    }
+                                },
+                                backgroundColor = Color.Blue,
+                                contentColor = Color.White,
+                                content = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Add,
+                                        contentDescription = "Add"
+                                    )
+                                }
+                            )
+                        }
                     },
 
                     ) {
@@ -173,7 +210,7 @@ fun BottomNavigationBar(
                         )
                     }
                 },
-                label = { Text(item.name) },
+                label = { Text(item.name, maxLines = 1, style = androidx.compose.ui.text.TextStyle(fontSize = 10.sp)) },
                 selected = selected,
                 selectedContentColor = Color.Red,
                 unselectedContentColor = Color.Black,
@@ -223,7 +260,8 @@ fun Navigation(navController: NavHostController) {
         composable("routine") {
             // Create Routine screen
             CreatingRoutineScreen(
-                navController = navController
+                //navController = navController,
+                onTimeSelected = {}
             )
         }
         composable("eventsScreen") {
