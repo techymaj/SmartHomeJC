@@ -6,9 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun AddingEventScreen(
-    navController: NavController
-) {
+fun AddingEventScreen() {
     Box {
         Text(text = "Adding Event Screen")
     }

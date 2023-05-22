@@ -1,7 +1,10 @@
 package com.example.smarthomejc.ui.pieces
 
+import android.content.res.Configuration
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,20 +27,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smarthomejc.R
+import com.example.smarthomejc.lazyRoutines
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
-import com.google.gson.annotations.SerializedName
+//import com.google.gson.annotations.SerializedName
 
 data class RoutineClass(
-    @SerializedName("name")
+//    @SerializedName("name")
     var name:String,
-    @SerializedName("time")
+//    @SerializedName("time")
     var time:String,
-    @SerializedName("isStarred")
+//    @SerializedName("isStarred")
     var isStarred:Boolean,
+    var content:String
 )
 
 @Composable
-fun RoutineItem(it:RoutineClass) {
+fun RoutineItem(it:RoutineClass, index:Int) {
     Box(modifier = Modifier
         .padding(10.dp, 5.dp)
         .clip(RoundedCornerShape(15.dp))
@@ -48,17 +53,25 @@ fun RoutineItem(it:RoutineClass) {
         .padding(start = 12.dp)
     ){
         val fav = remember { mutableStateOf(it.isStarred) }
+        val expanded = remember { mutableStateOf(false) }
         Row() {
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { expanded.value != expanded.value }
+                    .animateContentSize()
             ) {
-                Text(text = it.name, style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold), maxLines = 2)
-                Text(text = it.time, style = TextStyle(fontSize = 10.sp, color = Color.DarkGray))
+                Text(text = it.name, fontSize = 22.sp, color = Color.Black, fontWeight = FontWeight.Bold, maxLines = if(expanded.value) Int.MAX_VALUE else 1)
+                Text(text = it.content, fontSize = 16.sp,color = Color.Gray, maxLines = if(expanded.value) Int.MAX_VALUE else 2)
+                Text(text = it.time, fontSize = 10.sp, color = Color.DarkGray)
             }
             IconButton(onClick = { /*TODO*/
-                fav.value = !fav.value;
+                fav.value = !fav.value
+                lazyRoutines[index].isStarred = fav.value
+                //saveRoutinesListToFile(filePath)
             }) {
                 Icon(
+                    tint = Color.Black,
                     painter = if(fav.value){
                         painterResource(id = R.drawable.round_star_filled)
                     }else{
@@ -73,8 +86,8 @@ fun RoutineItem(it:RoutineClass) {
 
 @Preview
 @Composable
-fun a1(){
+fun A1(){
     SmartHomeJCTheme {
-        RoutineItem(it = RoutineClass(name = "One", time = "10:28", isStarred = true))
+        RoutineItem(it = RoutineClass(name = "One", time = "10:28", isStarred = true,"Is The loneliest number"),0)
     }
 }

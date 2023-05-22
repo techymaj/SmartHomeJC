@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,7 +23,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -34,26 +34,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.smarthomejc.ui.pieces.RoutineClass
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.File
-import java.io.FileOutputStream
-import java.time.format.TextStyle
 
-var file = File("data/routines.json")
-val gson = Gson()
-
+lateinit var thisRoute: MutableState<String>
 class MainActivity : ComponentActivity() {
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            try{
-                var json = file.readText()
-                val listType = object : TypeToken<List<RoutineClass>>() {}.type
-                lazyRoutines = gson.fromJson(json, listType)
-           }catch (_: Throwable){}
             SmartHomeJCTheme {
                 val navController = rememberNavController()
                 val systemUiController = rememberSystemUiController()
@@ -63,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         darkIcons = false
                     )
                 }
-                var routeHere = remember{ mutableStateOf("favorites")}
+                thisRoute = remember { mutableStateOf("favorites") }
                 Scaffold(
                     bottomBar = {
                         BottomNavigationBar(
@@ -88,7 +76,7 @@ class MainActivity : ComponentActivity() {
                             onItemClick = {
                                 // Handle item click
                                 navController.navigate(it.route)
-                                routeHere.value = navController.currentBackStackEntry?.destination?.route!!
+                                thisRoute.value = it.route
                             }
                         )
                     },
@@ -107,57 +95,53 @@ class MainActivity : ComponentActivity() {
                             elevation = 5.dp,
                             contentColor = Color.White,
                             actions = {
-                                IconButton(onClick = { /*TODO*/ }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Edit,
-                                        contentDescription = "Edit"
-                                    )
+                                if (thisRoute.value == "things") {
+                                    IconButton(onClick = { /*TODO*/ }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Search,
+                                            contentDescription = "Search"
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                    IconButton(onClick = { /*TODO*/ }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Menu,
+                                            contentDescription = "Menu"
+                                        )
+                                    }
+                                } else {
+                                    IconButton(onClick = { /*TODO*/ }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Edit,
+                                            contentDescription = "Edit"
+                                        )
+                                    }
                                 }
-/*                                if (navController.currentBackStackEntry?.destination?.route == "favorites") {
-//                                    IconButton(onClick = { /*TODO*/ }) {
-//                                        Icon(
-//                                            imageVector = Icons.Filled.Edit,
-//                                            contentDescription = "Edit"
-//                                        )
-//                                    }
-//                                } else if (navController.currentBackStackEntry?.destination?.route == "things") {
-//                                    IconButton(onClick = { /*TODO*/ }) {
-//                                        Icon(
-//                                            imageVector = Icons.Filled.Search,
-//                                            contentDescription = "Search"
-//                                        )
-//                                    }
-//                                    Spacer(modifier = Modifier.width(10.dp))
-//                                    IconButton(onClick = { /*TODO*/ }) {
-//                                        Icon(
-//                                            imageVector = Icons.Filled.Menu,
-//                                            contentDescription = "Menu"
-//                                        )
-//                                    }
-//                                }*/
                             }
                         )
                     },
                     floatingActionButton = {
-                        if(routeHere.value != "things" && routeHere.value != "settings"){
+                        if(
+                            (thisRoute.value != "things")
+                            && (thisRoute.value != "settings")
+                            && (thisRoute.value != "createRoutine")
+                        ){
                             FloatingActionButton(
                                 onClick = {
                                     // Navigate to new screen
-                                    if (routeHere.value == "createRoutine"){
-                                        lazyRoutines.add(RoutineClass(currName, currTime,false))
-                                        val json2 = gson.toJson(lazyRoutines)
-                                        val outputStream = FileOutputStream(file)
-                                        outputStream.write(json2.toByteArray())
-                                        outputStream.close()
-                                        navController.navigate("routines")
-                                    }
-                                    if (routeHere.value == "routines"){
+                                    if (thisRoute.value == "routines"){
                                         navController.navigate("createRoutine")
-                                        routeHere.value = "createRoutine"
+                                        thisRoute.value = "createRoutine"
                                     }
-                                    if (routeHere.value == "favorites"){
+                                    if (thisRoute.value == "favorites"){
                                         navController.navigate("routines")
-                                        routeHere.value = "routines"
+                                        thisRoute.value = "routines"
+                                    }
+                                    if (thisRoute.value == "routine"){
+                                        lazyRoutines.add(RoutineClass(currName, currTime,false,currCont))
+                                        //saveRoutinesListToFile(filePath)
+                                        navController.navigate("routines")
+                                        thisRoute.value = "routines"
                                     }
                                 },
                                 backgroundColor = Color.Blue,
@@ -179,6 +163,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 
 @Composable
@@ -266,9 +251,7 @@ fun Navigation(navController: NavHostController) {
         }
         composable("eventsScreen") {
             // Create Routine screen
-            AddingEventScreen(
-                navController = navController
-            )
+            AddingEventScreen()
         }
     }
 }

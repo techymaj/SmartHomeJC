@@ -1,8 +1,6 @@
 package com.example.smarthomejc
 
 import android.app.TimePickerDialog
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,21 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import java.time.LocalTime
 
-val currName:String = ""
-val currTime:String = ""
+var currName:String = ""
+var currTime:String = ""
+var currCont:String = ""
 
 @Composable
 fun CreatingRoutineScreen(
@@ -55,6 +50,7 @@ fun CreatingRoutineScreen(
     val selectedTime = remember { mutableStateOf(LocalTime.now()) }
 
     val textState = remember { mutableStateOf(TextFieldValue()) }
+    val textState1 = remember { mutableStateOf(TextFieldValue()) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -68,13 +64,15 @@ fun CreatingRoutineScreen(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = textState.value,
-                onValueChange = {textState.value=it},
+                onValueChange = {
+                    textState.value=it
+                    currName = it.text },
                 label = {
                     Text(text = "Routine Name")
                 }
             )
             Text(
-                text = "When",
+                text = "When $currTime",
                 fontSize = 23.sp,
                 color = Color.Black,
                 modifier = Modifier
@@ -133,6 +131,7 @@ fun CreatingRoutineScreen(
                         onTimeSelected = {
                             selectedTime.value = it
                             showTimePicker.value = false
+                            currTime = it.toString()
                             onTimeSelected(it)
                         },
                         onDismissRequest = { showTimePicker.value = false }
@@ -215,6 +214,16 @@ fun CreatingRoutineScreen(
                         .padding(all = 16.dp),
                 )
             }
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = textState1.value,
+                onValueChange = {
+                    textState1.value=it
+                    currCont = it.text },
+                label = {
+                    Text(text = "Lengthy Description")
+                }
+            )
         }
     }
 }
@@ -256,6 +265,7 @@ fun TimePicker(
     val dialog = remember {
         TimePickerDialog(context, { _, hour, minute ->
             onTimeSelected(hour, minute)
+            currTime = "$hour:$minute"
         }, 0, 0, true)
     }
     DisposableEffect(Unit) {
@@ -266,8 +276,8 @@ fun TimePicker(
 
 @Preview
 @Composable
-fun a1(){
+fun A1(){
     SmartHomeJCTheme {
-        TimePicker(onTimeSelected = {hour, minute ->  "$hour:$minute" })
+        CreatingRoutineScreen(onTimeSelected = { })
     }
 }
