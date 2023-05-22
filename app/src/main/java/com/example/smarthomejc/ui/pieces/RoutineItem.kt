@@ -24,8 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smarthomejc.R
+import com.example.smarthomejc.lazyRoutines
+import com.example.smarthomejc.saveToFile
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import com.google.gson.annotations.SerializedName
+import java.io.File
 
 data class RoutineClass(
     @SerializedName("name")
@@ -37,7 +40,7 @@ data class RoutineClass(
 )
 
 @Composable
-fun RoutineItem(it:RoutineClass) {
+fun RoutineItem(it:RoutineClass, index:Int) {
     Box(modifier = Modifier
         .padding(10.dp, 5.dp)
         .clip(RoundedCornerShape(15.dp))
@@ -56,7 +59,9 @@ fun RoutineItem(it:RoutineClass) {
                 Text(text = it.time, style = TextStyle(fontSize = 10.sp, color = Color.DarkGray))
             }
             IconButton(onClick = { /*TODO*/
-                fav.value = !fav.value;
+                fav.value = !fav.value
+                lazyRoutines[index].isStarred = fav.value
+                saveToFile(File("rtinfo/routines.json"))
             }) {
                 Icon(
                     painter = if(fav.value){
@@ -73,8 +78,8 @@ fun RoutineItem(it:RoutineClass) {
 
 @Preview
 @Composable
-fun a1(){
+fun A1(){
     SmartHomeJCTheme {
-        RoutineItem(it = RoutineClass(name = "One", time = "10:28", isStarred = true))
+        RoutineItem(it = RoutineClass(name = "One", time = "10:28", isStarred = true),0)
     }
 }

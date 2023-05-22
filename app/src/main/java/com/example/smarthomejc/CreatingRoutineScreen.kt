@@ -1,8 +1,6 @@
 package com.example.smarthomejc
 
 import android.app.TimePickerDialog
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,21 +28,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import java.time.LocalTime
 
-val currName:String = ""
-val currTime:String = ""
+var currName:String = ""
+var currTime:String = ""
 
 @Composable
 fun CreatingRoutineScreen(
@@ -68,7 +62,7 @@ fun CreatingRoutineScreen(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = textState.value,
-                onValueChange = {textState.value=it},
+                onValueChange = {textState.value=it;currName = it.toString()},
                 label = {
                     Text(text = "Routine Name")
                 }
@@ -133,6 +127,7 @@ fun CreatingRoutineScreen(
                         onTimeSelected = {
                             selectedTime.value = it
                             showTimePicker.value = false
+                            currTime = it.toString()
                             onTimeSelected(it)
                         },
                         onDismissRequest = { showTimePicker.value = false }
@@ -266,8 +261,8 @@ fun TimePicker(
 
 @Preview
 @Composable
-fun a1(){
+fun A1(){
     SmartHomeJCTheme {
-        TimePicker(onTimeSelected = {hour, minute ->  "$hour:$minute" })
+        TimePicker(onTimeSelected = {hour, minute ->  currTime = "$hour:$minute" })
     }
 }
