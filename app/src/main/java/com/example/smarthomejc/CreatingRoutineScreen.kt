@@ -43,9 +43,10 @@ import androidx.navigation.NavHostController
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import java.time.LocalTime
 
-val currName:String = ""
-val currTime:String = ""
+val currName: String = ""
+val currTime: String = ""
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreatingRoutineScreen(
     onTimeSelected: (LocalTime) -> Unit,
@@ -68,7 +69,7 @@ fun CreatingRoutineScreen(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = textState.value,
-                onValueChange = {textState.value=it},
+                onValueChange = { textState.value = it },
                 label = {
                     Text(text = "Routine Name")
                 }
@@ -125,7 +126,7 @@ fun CreatingRoutineScreen(
                         imageVector = Icons.Filled.Add,
                         contentDescription = "Add Event",
 
-                    )
+                        )
                 }
                 if (showTimePicker.value) {
                     TimePickerDialog(
@@ -169,7 +170,7 @@ fun CreatingRoutineScreen(
             ) {
                 Spacer(modifier = Modifier.padding(horizontal = 100.dp))
                 Text(
-                    text = "Add Event",
+                    text = "Add Action",
                     fontSize = 23.sp,
                     color = Color.Black,
                     textAlign = TextAlign.Center,
@@ -188,7 +189,7 @@ fun CreatingRoutineScreen(
                             .background(Color.Blue)
                             .size(35.dp),
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Event"
+                        contentDescription = "Add Action",
                     )
                 }
             }
@@ -219,6 +220,7 @@ fun CreatingRoutineScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TimePickerDialog(
     initialTime: LocalTime,
@@ -235,7 +237,8 @@ fun TimePickerDialog(
             modifier = Modifier.padding(16.dp)
         ) {
             TimePicker { hour, minute ->
-                onTimeSelected(initialTime.withHour(hour).withMinute(minute))}
+                onTimeSelected(initialTime.withHour(hour).withMinute(minute))
+            }
             // Display and interact with the clock picker here
 
             Button(
@@ -266,8 +269,8 @@ fun TimePicker(
 
 @Preview
 @Composable
-fun a1(){
+fun a1() {
     SmartHomeJCTheme {
-        TimePicker(onTimeSelected = {hour, minute ->  "$hour:$minute" })
+        TimePicker(onTimeSelected = { hour, minute -> "$hour:$minute" })
     }
 }
