@@ -39,6 +39,7 @@ import java.time.LocalTime
 
 var currName:String = ""
 var currTime:String = ""
+var currCont:String = ""
 
 @Composable
 fun CreatingRoutineScreen(
@@ -49,6 +50,7 @@ fun CreatingRoutineScreen(
     val selectedTime = remember { mutableStateOf(LocalTime.now()) }
 
     val textState = remember { mutableStateOf(TextFieldValue()) }
+    val textState1 = remember { mutableStateOf(TextFieldValue()) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -62,13 +64,15 @@ fun CreatingRoutineScreen(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = textState.value,
-                onValueChange = {textState.value=it;currName = it.toString()},
+                onValueChange = {
+                    textState.value=it
+                    currName = it.text },
                 label = {
                     Text(text = "Routine Name")
                 }
             )
             Text(
-                text = "When",
+                text = "When $currTime",
                 fontSize = 23.sp,
                 color = Color.Black,
                 modifier = Modifier
@@ -210,6 +214,16 @@ fun CreatingRoutineScreen(
                         .padding(all = 16.dp),
                 )
             }
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = textState1.value,
+                onValueChange = {
+                    textState1.value=it
+                    currCont = it.text },
+                label = {
+                    Text(text = "Lengthy Description")
+                }
+            )
         }
     }
 }
@@ -251,6 +265,7 @@ fun TimePicker(
     val dialog = remember {
         TimePickerDialog(context, { _, hour, minute ->
             onTimeSelected(hour, minute)
+            currTime = "$hour:$minute"
         }, 0, 0, true)
     }
     DisposableEffect(Unit) {
@@ -263,6 +278,6 @@ fun TimePicker(
 @Composable
 fun A1(){
     SmartHomeJCTheme {
-        TimePicker(onTimeSelected = {hour, minute ->  currTime = "$hour:$minute" })
+        CreatingRoutineScreen(onTimeSelected = { })
     }
 }

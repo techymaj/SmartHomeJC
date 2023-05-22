@@ -2,20 +2,40 @@ package com.example.smarthomejc
 
 import androidx.compose.runtime.Composable
 import com.example.smarthomejc.ui.pieces.RoutineClass
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.File
 
 var lazyRoutines = mutableListOf<RoutineClass>()
+//const val filePath = "rtinfo/routines.json"
 // committed
 @Composable
 fun RoutinesScreen() {
-    val file = File("rtinfo/routines.json")
-    val gson = Gson()
-    try{
-        val json = file.readText()
-        val listType = object : TypeToken<List<RoutineClass>>() {}.type
-        lazyRoutines = gson.fromJson(json, listType)
-    }catch (_: Throwable){}
+//    try{
+//        updateRoutinesListFromFile(filePath)
+//    }catch (_: Throwable){}
     DynamicSvgContainer(routines = lazyRoutines)
 }
+
+/*
+fun saveRoutinesListToFile(path:String) {
+    try{
+        val gson = Gson()
+        val json2 = gson.toJson(lazyRoutines)
+        val outputStream = FileOutputStream(path)
+        outputStream.write(json2.toByteArray())
+        outputStream.close()}
+    catch(_:Throwable){
+        File(path).createNewFile()
+        saveRoutinesListToFile(path)
+    }
+}
+fun updateRoutinesListFromFile(path:String){
+    try{
+        val gson = Gson()
+        val json = File(path).readText()
+        val listType = object : TypeToken<List<RoutineClass>>() {}.type
+        lazyRoutines = gson.fromJson(json, listType)
+    }catch(_:Throwable){
+        saveRoutinesListToFile(path)
+    }
+}
+
+ */

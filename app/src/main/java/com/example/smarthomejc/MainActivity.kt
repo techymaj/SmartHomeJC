@@ -12,7 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,20 +34,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.smarthomejc.ui.pieces.RoutineClass
 import com.example.smarthomejc.ui.theme.SmartHomeJCTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.gson.Gson
-import java.io.File
-import java.io.FileOutputStream
 
-
+lateinit var thisRoute: MutableState<String>
 class MainActivity : ComponentActivity() {
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val file = File("rtinfo/routines.json")
-            try{ file.createNewFile()}
-            catch(_:Throwable){}
             SmartHomeJCTheme {
                 val navController = rememberNavController()
                 val systemUiController = rememberSystemUiController()
@@ -54,6 +51,7 @@ class MainActivity : ComponentActivity() {
                         darkIcons = false
                     )
                 }
+                thisRoute = remember { mutableStateOf("favorites") }
                 Scaffold(
                     bottomBar = {
                         BottomNavigationBar(
@@ -78,6 +76,7 @@ class MainActivity : ComponentActivity() {
                             onItemClick = {
                                 // Handle item click
                                 navController.navigate(it.route)
+                                thisRoute.value = it.route
                             }
                         )
                     },
@@ -96,14 +95,14 @@ class MainActivity : ComponentActivity() {
                             elevation = 5.dp,
                             contentColor = Color.White,
                             actions = {
-                                if (navController.currentBackStackEntry?.destination?.route!! == "things") {
+                                if (thisRoute.value == "things") {
                                     IconButton(onClick = { /*TODO*/ }) {
                                         Icon(
                                             imageVector = Icons.Filled.Search,
                                             contentDescription = "Search"
                                         )
                                     }
-                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Spacer(modifier = Modifier.width(5.dp))
                                     IconButton(onClick = { /*TODO*/ }) {
                                         Icon(
                                             imageVector = Icons.Filled.Menu,
@@ -123,23 +122,26 @@ class MainActivity : ComponentActivity() {
                     },
                     floatingActionButton = {
                         if(
-                            navController.currentBackStackEntry?.destination?.route!! != "things"
-                            && navController.currentBackStackEntry?.destination?.route!! != "settings"
-                            && navController.currentBackStackEntry?.destination?.route!! != "createRoutine"
+                            (thisRoute.value != "things")
+                            && (thisRoute.value != "settings")
+                            && (thisRoute.value != "createRoutine")
                         ){
                             FloatingActionButton(
                                 onClick = {
                                     // Navigate to new screen
-                                    if (navController.currentBackStackEntry?.destination?.route!! == "routines"){
+                                    if (thisRoute.value == "routines"){
                                         navController.navigate("createRoutine")
+                                        thisRoute.value = "createRoutine"
                                     }
-                                    if (navController.currentBackStackEntry?.destination?.route!! == "favorites"){
+                                    if (thisRoute.value == "favorites"){
                                         navController.navigate("routines")
+                                        thisRoute.value = "routines"
                                     }
-                                    if (navController.currentBackStackEntry?.destination?.route!! == "routine"){
-                                        lazyRoutines.add(RoutineClass(currName, currTime,false))
-                                        saveToFile(file)
+                                    if (thisRoute.value == "routine"){
+                                        lazyRoutines.add(RoutineClass(currName, currTime,false,currCont))
+                                        //saveRoutinesListToFile(filePath)
                                         navController.navigate("routines")
+                                        thisRoute.value = "routines"
                                     }
                                 },
                                 backgroundColor = Color.Blue,
@@ -162,13 +164,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun saveToFile(file:File) {
-    val gson = Gson()
-    val json2 = gson.toJson(lazyRoutines)
-    val outputStream = FileOutputStream(file)
-    outputStream.write(json2.toByteArray())
-    outputStream.close()
-}
 
 
 @Composable
@@ -256,9 +251,7 @@ fun Navigation(navController: NavHostController) {
         }
         composable("eventsScreen") {
             // Create Routine screen
-            AddingEventScreen(
-                navController = navController
-            )
+            AddingEventScreen()
         }
     }
 }

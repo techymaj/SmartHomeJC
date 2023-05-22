@@ -15,6 +15,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +41,7 @@ fun CreateRoutineScreen(
             IconButton(onClick = {
                 // Navigate to a new screen
                 navController.navigate("routine")
+                thisRoute.value = "routine"
             },
                 Modifier
                     .padding(10.dp)
@@ -56,6 +58,7 @@ fun CreateRoutineScreen(
             TextButton(
                 onClick = {
                     navController.navigate("routine")
+                    thisRoute.value = "routine"
                 }
             ){
                 Text(
