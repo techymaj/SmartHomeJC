@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
@@ -56,174 +58,178 @@ fun CreatingRoutineScreen(
             .fillMaxSize()
             .background(Color.LightGray)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = textState.value,
-                onValueChange = {
-                    textState.value=it
-                    currName = it.text },
-                label = {
-                    Text(text = "Routine Name")
-                }
-            )
-            Text(
-                text = "When $currTime",
-                fontSize = 23.sp,
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = 16.dp),
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.DarkGray)
-            ) {
-                Text(
-                    text = "Want this routine to run automatically? Add an event below",
-                    fontSize = 15.sp,
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center,
+        LazyColumn{
+            this.item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 16.dp),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Spacer(modifier = Modifier.padding(horizontal = 100.dp))
-                Text(
-                    text = "Add Event",
-                    fontSize = 23.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(all = 16.dp),
-                )
-                IconButton(
-                    onClick = {
-                        showTimePicker.value = true
-                        // Navigate to a new screen
-                        //navController.navigate("eventsScreen")
-                    }) {
-                    Icon(
+                ) {
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = textState.value,
+                        onValueChange = {
+                            textState.value=it
+                            currName = it.text },
+                        label = {
+                            Text(text = "Routine Name")
+                        }
+                    )
+                    Text(
+                        text = "At $currTime",
+                        fontSize = 23.sp,
+                        color = Color.Black,
                         modifier = Modifier
-                            .padding(top = 16.dp, end = 20.dp)
-                            .clip(CircleShape)
-                            .background(Color.Blue)
-                            .size(35.dp),
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Event",
+                            .fillMaxWidth()
+                            .padding(all = 16.dp),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.DarkGray)
+                    ) {
+                        Text(
+                            text = "Want this routine to run automatically? Add an event below",
+                            fontSize = 15.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = 16.dp),
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Add Event",
+                            fontSize = 23.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.weight(4f).padding(8.dp),
+                        )
+                        IconButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                showTimePicker.value = true
+                                // Navigate to a new screen
+                                //navController.navigate("eventsScreen")
+                            }) {
+                            Icon(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(Color.Blue)
+                                    .size(35.dp),
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Add Event",
 
-                    )
-                }
-                if (showTimePicker.value) {
-                    TimePickerDialog(
-                        initialTime = selectedTime.value,
-                        onTimeSelected = {
-                            selectedTime.value = it
-                            showTimePicker.value = false
-                            currTime = it.toString()
-                            onTimeSelected(it)
-                        },
-                        onDismissRequest = { showTimePicker.value = false }
-                    )
-                }
-            }
-            Text(
-                text = "Run these actions",
-                fontSize = 23.sp,
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = 16.dp),
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.DarkGray)
-            ) {
-                Text(
-                    text = "No actions. Tap below to add one.",
-                    fontSize = 15.sp,
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(all = 16.dp),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Spacer(modifier = Modifier.padding(horizontal = 100.dp))
-                Text(
-                    text = "Add Event",
-                    fontSize = 23.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(all = 16.dp),
-                )
-                IconButton(
-                    onClick = {
-                        // Navigate to a new screen
-//                        navController.navigate("routine")
-                    }) {
-                    Icon(
+                                )
+                        }
+                        if (showTimePicker.value) {
+                            TimePickerDialog(
+                                initialTime = selectedTime.value,
+                                onTimeSelected = {
+                                    selectedTime.value = it
+                                    showTimePicker.value = false
+                                    currTime = it.toString()
+                                    onTimeSelected(it)
+                                },
+                                onDismissRequest = { showTimePicker.value = false }
+                            )
+                        }
+                    }
+                    Text(
+                        text = "Run these actions",
+                        fontSize = 23.sp,
+                        color = Color.Black,
                         modifier = Modifier
-                            .padding(top = 16.dp, end = 20.dp)
-                            .clip(CircleShape)
-                            .background(Color.Blue)
-                            .size(35.dp),
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Event"
+                            .fillMaxWidth()
+                            .padding(all = 16.dp),
                     )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.DarkGray)
+                    ) {
+                        Text(
+                            text = "No actions. Tap below to add one.",
+                            fontSize = 15.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = 16.dp),
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Add Event",
+                            fontSize = 23.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.weight(4f).padding(8.dp),
+                        )
+                        IconButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                // Navigate to a new screen
+//                        navController.navigate("routine")
+                            }) {
+                            Icon(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(Color.Blue)
+                                    .size(35.dp),
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Add Event"
+                            )
+                        }
+                    }
+                    Text(
+                        text = "But only if",
+                        fontSize = 23.sp,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 16.dp),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.DarkGray)
+                    ) {
+                        Text(
+                            text = "Add an event before adding conditions.",
+                            fontSize = 15.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = 16.dp),
+                        )
+                    }
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        maxLines = 5,
+                        value = textState1.value,
+                        onValueChange = {
+                            textState1.value=it
+                            currCont = it.text },
+                        label = {
+                            Text(text = "Lengthy Description")
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
-            Text(
-                text = "But only if",
-                fontSize = 23.sp,
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = 16.dp),
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.DarkGray)
-            ) {
-                Text(
-                    text = "Add an event before adding conditions.",
-                    fontSize = 15.sp,
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(all = 16.dp),
-                )
-            }
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = textState1.value,
-                onValueChange = {
-                    textState1.value=it
-                    currCont = it.text },
-                label = {
-                    Text(text = "Lengthy Description")
-                }
-            )
         }
     }
 }

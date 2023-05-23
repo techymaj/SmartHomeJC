@@ -1,6 +1,5 @@
 package com.example.smarthomejc.ui.pieces
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,11 +56,13 @@ fun RoutineItem(it:RoutineClass, index:Int) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { expanded.value != expanded.value }
+                    .clickable { expanded.value = !expanded.value }
                     .animateContentSize()
             ) {
-                Text(text = it.name, fontSize = 22.sp, color = Color.Black, fontWeight = FontWeight.Bold, maxLines = if(expanded.value) Int.MAX_VALUE else 1)
-                Text(text = it.content, fontSize = 16.sp,color = Color.Gray, maxLines = if(expanded.value) Int.MAX_VALUE else 2)
+                Text(text = it.name, fontSize = 22.sp, color = Color.Black,
+                    fontWeight = FontWeight.Bold, maxLines = if(expanded.value) Int.MAX_VALUE else 1)
+                Text(text = it.content, fontSize = 16.sp,color = Color.Gray,
+                    maxLines = if(expanded.value) Int.MAX_VALUE else 2)
                 Text(text = it.time, fontSize = 10.sp, color = Color.DarkGray)
             }
             IconButton(onClick = { /*TODO*/
